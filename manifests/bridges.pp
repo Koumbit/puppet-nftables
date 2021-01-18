@@ -6,7 +6,12 @@ class nftables::bridges (
   # lint:endignore
 ) {
   if $ensure == 'present' {
-    $interfaces = keys($facts['networking']['interfaces'])
+    if $facts['networking'] {
+      $interfaces = keys($facts['networking']['interfaces'])
+    }
+    else {
+      $interfaces = split($facts['interfaces'], ',')
+    }
     $bridges = $interfaces.filter |$items| { $items =~ $bridgenames }
 
     $bridges.each |String $bridge| {
