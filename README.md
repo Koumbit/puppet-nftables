@@ -18,6 +18,9 @@ The config file has a inet filter and a ip nat table setup.
 Additionally, the module comes with a basic infrastructure
 to hook into different places.
 
+Note: for Debian Stretch, nftables from stretch-backports
+*must* be used.
+
 ## nftables config
 
 The main configuration file loaded by the nftables service
