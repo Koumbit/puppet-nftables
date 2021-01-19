@@ -103,6 +103,9 @@ class nftables (
   Variant[Boolean[false], Enum['mask']] $firewalld_enable = 'mask',
   Optional[Array[Pattern[/^(ip|ip6|inet)-[-a-zA-Z0-9_]+$/],1]] $noflush_tables = undef,
   Stdlib::Unixpath $configuration_path = '/etc/sysconfig/nftables.conf',
+  Stdlib::Unixpath $nft_path = '/usr/sbin/nft',
+  Stdlib::Unixpath $systemctl_path = '/usr/bin/systemctl',
+  Stdlib::Unixpath $echo_path = '/usr/bin/echo',
 ) {
   package { 'nftables':
     ensure => installed,
@@ -131,7 +134,7 @@ class nftables (
   } ~> exec {
     'nft validate':
       refreshonly => true,
-      command     => '/usr/sbin/nft -I /etc/nftables/puppet-preflight -c -f /etc/nftables/puppet-preflight.nft || ( /usr/bin/echo "#CONFIG BROKEN" >> /etc/nftables/puppet-preflight.nft && /bin/false)';
+      command     => "${nft_path} -I /etc/nftables/puppet-preflight -c -f /etc/nftables/puppet-preflight.nft || ( ${echo_path} \"#CONFIG BROKEN\" >> /etc/nftables/puppet-preflight.nft && /bin/false)";
   } -> file {
     default:
       owner => 'root',
@@ -150,11 +153,12 @@ class nftables (
     ensure     => running,
     enable     => true,
     hasrestart => true,
-    restart    => '/usr/bin/systemctl reload nftables',
+    restart    => "${systemctl_path} reload nftables",
   }
 
   $puppet_nft_vars = {
     'configuration_path' => $configuration_path,
+    'nft_path'           => $nft_path,
   }
   systemd::dropin_file { 'puppet_nft.conf':
     ensure  => present,
