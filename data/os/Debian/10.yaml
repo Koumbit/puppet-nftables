@@ -1,0 +1,4 @@
+---
+
+nftables::systemctl_path: /bin/systemctl
+nftables::echo_path: /bin/echo
