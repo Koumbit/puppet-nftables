@@ -14,7 +14,8 @@ describe 'nftables' do
                   'lo' => {},
                   'br0' => {},
                   'br1-2' => {},
-                } },
+                  'br1-2:1' => {},
+                } }
           )
         end
 
@@ -33,6 +34,13 @@ describe 'nftables' do
           is_expected.to contain_nftables__rule('default_fwd-bridge_br1_br1').with(
             order: '08',
             content: 'iifname br1 oifname br1 accept',
+          )
+        }
+
+        it {
+          expect(subject).to contain_nftables__rule('default_fwd-bridge_br1_2_1_br1_2_1').with(
+            order: '08',
+            content: 'iifname br1-2:1 oifname br1-2:1 accept'
           )
         }
       end
