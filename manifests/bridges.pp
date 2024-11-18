@@ -15,7 +15,6 @@ class nftables::bridges (
     $bridges = $interfaces.filter |$items| { $items =~ $bridgenames }
 
     $bridges.each |String $bridge| {
-      $bridge = "\"${bridge}\""
       $bridge_rulename = regsubst($bridge, '-|:', '_', 'G')
       nftables::rule { "default_fwd-bridge_${bridge_rulename}_${bridge_rulename}":
         order   => '08',
