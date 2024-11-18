@@ -18,7 +18,7 @@ class nftables::bridges (
       $bridge_rulename = regsubst($bridge, '-|:', '_', 'G')
       nftables::rule { "default_fwd-bridge_${bridge_rulename}_${bridge_rulename}":
         order   => '08',
-        content => "iifname ${bridge} oifname ${bridge} accept",
+        content => "iifname \"${bridge}\" oifname \"${bridge}\" accept",
       }
     }
   }
